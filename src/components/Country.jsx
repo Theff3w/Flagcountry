@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 const Country = () => {
-  const [country, setCountry] = useState([]);
+  const [country, setCountry] = useState({});
   const { name } = useParams();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const Country = () => {
           throw new Error('Country not found');
         }
         const countryData = await response.json();
-        setCountry(countryData);
+        setCountry(countryData[0]);
 
         console.log(countryData);
       } catch (error) {
@@ -29,12 +29,21 @@ const Country = () => {
       <Link to="/" className="btn btn-light">
         <i className="fas fa-arrow-left"></i> Back Home
       </Link>
-      <h1>{name}</h1>
-      {country.length > 0 && (
+      {country && (
         <div>
-          
-          <h2>Capital: {country[0].capital?.[0]}</h2>
-          
+          <h1>{country.name?.common}</h1>
+          <h2>Capital: {country.capital?.[0]}</h2>
+          <p>Population: {country.population}</p>
+          <p>Region: {country.region}</p>
+          <p>Subregion: {country.subregion}</p>
+          <h3>Languages:</h3>
+          <ul>
+            {country.languages && Object.values(country.languages).map((language, index) => (
+              <li key={index}>{language}</li>
+            ))}
+          </ul>
+          <h3>Flag:</h3>
+          <img src={country.flags?.png} alt={`${country.name?.common} Flag`} style={{ maxWidth: '200px' }} />
         </div>
       )}
     </>
